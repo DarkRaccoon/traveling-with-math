@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Путешествуем с математикой</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231e3799'/><circle cx='35' cy='35' r='20' fill='%233498db'/><circle cx='65' cy='65' r='20' fill='%232ecc71'/><path d='M35,35 L65,65' stroke='white' stroke-width='4' stroke-linecap='round'/><text x='50' y='85' font-family='Arial' font-size='12' fill='white' text-anchor='middle'>M+T</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231e3799'/><circle cx='35' cy='35' r='20' fill='%233498db'/><circle cx='65' cy='65' r='20' fill='%232ecc71'/><path d='M35,35 L65,65' stroke='white' stroke-width='4' stroke-linecap='round'/><text x='50' y='85' font-family='Arial' font-size='12' fill='white' text-anchor='middle'>M+T</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html {
+            overflow-x: hidden;
+        }
+
+        body {
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #0a0a14;
+            overflow-x: hidden;
+        }
+
+        /* ФОНОВОЕ ИЗОБРАЖЕНИЕ */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('https://s6.iimage.su/s/05/uchDxJqx3uiQRpiwtnoRWz8kdCBUcokM6Nl7q0FF.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            z-index: -2;
+            opacity: 0.9;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10, 15, 30, 0.4);
+            z-index: -1;
+        }
+
+        /* ЗАГОЛОВОК */
+        .site-title {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: white;
+            text-align: center;
+            margin-bottom: clamp(30px, 5vw, 60px);
+            text-shadow: 
+                0 0 20px rgba(52, 152, 219, 0.7),
+                0 0 40px rgba(52, 152, 219, 0.5),
+                2px 2px 4px rgba(0, 0, 0, 0.8);
+            position: relative;
+            padding-bottom: 20px;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { 
+                text-shadow: 
+                    0 0 20px rgba(52, 152, 219, 0.7),
+                    0 0 40px rgba(52, 152, 219, 0.5),
+                    2px 2px 4px rgba(0, 0, 0, 0.8);
+                transform: translateY(0);
+            }
+            100% { 
+                text-shadow: 
+                    0 0 30px rgba(52, 152, 219, 0.9),
+                    0 0 60px rgba(52, 152, 219, 0.7),
+                    3px 3px 6px rgba(0, 0, 0, 0.9);
+                transform: translateY(-5px);
+            }
+        }
+
+        .site-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(80vw, 300px);
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                #3498db, 
+                #2ecc71, 
+                transparent);
+            border-radius: 2px;
+            filter: blur(1px);
+            animation: linePulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes linePulse {
+            0% { width: min(60vw, 200px); opacity: 0.5; }
+            100% { width: min(80vw, 300px); opacity: 1; }
+        }
+
+        /* КОНТЕЙНЕР ДЛЯ ТРЕКОВ */
+        .tracks-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: clamp(25px, 4vw, 40px);
+            max-width: min(1400px, 95vw);
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* КАРТОЧКА ТРЕКА */
+        .track {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: clamp(20px, 3vw, 25px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            height: 100%;
+            min-height: 520px;
+        }
+
+        .track::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent);
+            transition: left 0.7s;
+        }
+
+        .track:hover {
+            transform: 
+                translateY(-15px) 
+                scale(1.03);
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(52, 152, 219, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(52, 152, 219, 0.4);
+        }
+
+        .track:hover::before {
+            left: 100%;
+        }
+
+        /* ИЗОБРАЖЕНИЕ ТРЕКА - БЕЗ ФОНА И РАМОК */
+        .track-image {
+            width: 100%;
+            height: clamp(240px, 40vw, 320px);
+            margin-bottom: clamp(15px, 3vw, 25px);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* Убираем все фоны и рамки */
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            overflow: visible;
+        }
+
+        .track:hover .track-image {
+            transform: translateY(-5px);
+        }
+
+        .track-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* Полностью убираем фон, рамки, тени */
+            background: none !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            display: block;
+        }
+
+        .track:hover .track-image img {
+            transform: scale(1.08);
+        }
+
+        /* Убираем эффект свечения на изображении */
+        .track-image::after {
+            display: none;
+        }
+
+        /* НАЗВАНИЕ ТРЕКА */
+        .track-name {
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: clamp(15px, 3vw, 25px);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            padding: 0 10px;
+            position: relative;
+            transition: all 0.4s ease;
+            line-height: 1.3;
+            flex-shrink: 0;
+        }
+
+        .track-name::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #3498db, transparent);
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .track:hover .track-name::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        /* КНОПКИ */
+        .track-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(12px, 2vw, 15px);
+            width: 100%;
+            position: relative;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            padding: clamp(14px, 2vw, 16px) clamp(18px, 2.5vw, 25px);
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            letter-spacing: 1px;
+            width: 100%;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            min-height: 52px;
+        }
+
+        .btn-listen {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border: 2px solid rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-listen:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+            transform: 
+                translateY(-5px) 
+                scale(1.05);
+            box-shadow: 
+                0 15px 35px rgba(52, 152, 219, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border-color: rgba(52, 152, 219, 0.7);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            border: 2px solid rgba(46, 204, 113, 0.4);
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-download:hover {
+            background: linear-gradient(135deg, #27ae60 0%, #219653 100%);
+            transform: 
+                translateY(-5px) 
+                scale(1.05);
+            box-shadow: 
+                0 15px 35px rgba(46, 204, 113, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border-color: rgba(46, 204, 113, 0.7);
+        }
+
+        .btn i {
+            margin-right: clamp(8px, 1.5vw, 12px);
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn:hover i {
+            transform: 
+                scale(1.3) 
+                rotate(15deg);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* АУДИОПЛЕЕР */
+        .audio-player {
+            display: none;
+            position: fixed;
+            bottom: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(600px, 95vw);
+            background: rgba(25, 30, 45, 0.97);
+            padding: clamp(15px, 3vw, 25px);
+            border-radius: 20px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(52, 152, 219, 0.3);
+            z-index: 1000;
+            border: 2px solid rgba(52, 152, 219, 0.4);
+            backdrop-filter: blur(15px);
+            transition: bottom 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .audio-player.show {
+            display: block;
+            bottom: clamp(15px, 3vw, 30px);
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: clamp(15px, 2vw, 20px);
+            padding-bottom: clamp(10px, 2vw, 15px);
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .player-title {
+            font-weight: 700;
+            color: white;
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            text-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+            animation: textGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 10px rgba(52, 152, 219, 0.5); }
+            100% { text-shadow: 0 0 20px rgba(52, 152, 219, 0.8); }
+        }
+
+        .close-player {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: clamp(35px, 6vw, 45px);
+            height: clamp(35px, 6vw, 45px);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .close-player:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .progress-container {
+            width: 100%;
+            margin: clamp(15px, 2vw, 20px) 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: clamp(6px, 1vw, 8px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.1s linear;
+            position: relative;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.6);
+        }
+
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: clamp(20px, 3vw, 30px);
+            margin-top: clamp(15px, 3vw, 25px);
+        }
+
+        .player-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%);
+            border: none;
+            width: clamp(50px, 8vw, 70px);
+            height: clamp(50px, 8vw, 70px);
+            border-radius: 50%;
+            cursor: pointer;
+            color: white;
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(52, 152, 219, 0.4);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(52, 152, 219, 0.6);
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        /* АНИМАЦИИ ПОЯВЛЕНИЯ КАРТОЧЕК */
+        @keyframes trackAppear {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .track {
+            animation: trackAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+        }
+
+        .track:nth-child(1) { animation-delay: 0.1s; }
+        .track:nth-child(2) { animation-delay: 0.3s; }
+        .track:nth-child(3) { animation-delay: 0.5s; }
+
+        /* УВЕДОМЛЕНИЯ */
+        .notification {
+            position: fixed;
+            top: clamp(20px, 4vw, 30px);
+            right: clamp(15px, 4vw, 30px);
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: clamp(15px, 2vw, 20px) clamp(18px, 2.5vw, 25px);
+            border-radius: 15px;
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            max-width: min(400px, 90vw);
+            transform: translateX(120%);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification i {
+            font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+            margin-right: clamp(10px, 2vw, 15px);
+            animation: iconBounce 1s infinite alternate;
+        }
+
+        @keyframes iconBounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); }
+        }
+
+        /* АДАПТИВНОСТЬ */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+                justify-content: flex-start;
+                padding-top: clamp(30px, 8vh, 60px);
+            }
+
+            .tracks-container {
+                grid-template-columns: 1fr;
+                max-width: 450px;
+            }
+
+            .track {
+                min-height: auto;
+            }
+
+            .track-buttons {
+                margin-top: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .track-image {
+                height: 220px;
+            }
+
+            .btn {
+                min-height: 48px;
+            }
+
+            .track {
+                padding: 18px;
+            }
+        }
+
+        /* ОПТИМИЗАЦИЯ ДЛЯ 1920x1080 */
+        @media (min-width: 1600px) {
+            .tracks-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 50px;
+                max-width: 1600px;
+            }
+
+            .track-image {
+                height: 350px;
+            }
+
+            .track {
+                min-height: 600px;
+            }
+        }
+
+        @media (min-width: 1920px) {
+            .tracks-container {
+                max-width: 1800px;
+                gap: 60px;
+            }
+
+            .track-image {
+                height: 380px;
+            }
+
+            .site-title {
+                font-size: 4rem;
+                margin-bottom: 80px;
+            }
+        }
+
+        /* ПРЕДОТВРАЩЕНИЕ БЛОКАДЫ КАСАНИЯ */
+        @media (hover: none) and (pointer: coarse) {
+            .track:hover {
+                transform: none;
+            }
+
+            .btn:hover, .player-btn:hover, .close-player:hover {
+                transform: none;
+            }
+
+            .track:hover .track-image {
+                transform: none;
+            }
+
+            .btn:active, .player-btn:active, .close-player:active {
+                transform: scale(0.98);
+            }
+        }
+
+        /* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ ИЗОБРАЖЕНИЙ БЕЗ РАМОК */
+        .track-image-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Заголовок -->
+    <h1 class="site-title">Путешествуем с математикой</h1>
+    
+    <!-- Контейнер с треками -->
+    <div class="tracks-container">
+        <!-- Трек 1 -->
+        <div class="track">
+            <div class="track-image">
+                <img src="https://s6.iimage.su/s/05/uW6qG6txkCGh8WONt86zF4zzXpn1NoKCwF1yi4Oo.jpg"
+                     srcset="https://s6.iimage.su/s/05/uW6qG6txkCGh8WONt86zF4zzXpn1NoKCwF1yi4Oo.jpg 800w"
+                     sizes="(max-width: 600px) 480px, 800px"
+                     alt="С Мирой по Миру"
+                     loading="lazy">
+            </div>
+            <h2 class="track-name">С Мирой по Миру</h2>
+            <div class="track-buttons">
+                <button class="btn btn-listen" data-track="1">
+                    <i class="fas fa-play"></i> Слушать
+                </button>
+                <a href="https://edef3.pcloud.com/cfZTKKUgaZxJ1HaP7Zf7p2ZZmNtw0kZ2ZZ55XZZtDLXXZoVZf5ZhVZy5ZERZCzZv7ZFQZPHZ7FZvRZH5ZrzZeLZB6j9vi5EWRXV3021XdxbopWcaG4X/Маршрут%203%20с%20Мирой%20по%20Мира.mp3" 
+                   class="btn btn-download" 
+                   download="С Мирой по Миру.mp3">
+                    <i class="fas fa-download"></i> Скачать
+                </a>
+            </div>
+        </div>
+        
+        <!-- Трек 2 -->
+        <div class="track">
+            <div class="track-image">
+                <img src="https://s6.iimage.su/s/05/uDMdBCrxS3wnlrGb1dheh2gWS3MVHEX3CrFvz8CR.jpg"
+                     srcset="https://s6.iimage.su/s/05/uDMdBCrxS3wnlrGb1dheh2gWS3MVHEX3CrFvz8CR.jpg 800w"
+                     sizes="(max-width: 600px) 480px, 800px"
+                     alt="Енисей-Батюшка"
+                     loading="lazy">
+            </div>
+            <h2 class="track-name">Енисей-Батюшка</h2>
+            <div class="track-buttons">
+                <button class="btn btn-listen" data-track="2">
+                    <i class="fas fa-play"></i> Слушать
+                </button>
+                <a href="https://edef6.pcloud.com/cfZA4KUgaZASDHaP7Zf7p2ZZlAtw0kZ2ZZ55XZZvbdSkZppZn4ZRHZYRZF4ZHFZXRZbpZERZEHZTFZlHZP8ZlpZyDWQ7p78DUyWhqIs5R5kj7pcb3pX/Маршрут%201%20Енисей 4. -Батюшка.mp3" 
+                   class="btn btn-download" 
+                   download="Енисей-Батюшка.mp3">
+                    <i class="fas fa-download"></i> Скачать
+                </a>
+            </div>
+        </div>
+        
+        <!-- Трек 3 -->
+        <div class="track">
+            <div class="track-image">
+                <img src="https://s6.iimage.su/s/05/uotfKZlx4REnt3zJL3o0fqTYNR860rGVcojEkotz.jpg"
+                     srcset="https://s6.iimage.su/s/05/uotfKZlx4REnt3zJL3o0fqTYNR860rGVcojEkotz.jpg 800w"
+                     sizes="(max-width: 600px) 480px, 800px"
+                     alt="Прогулка вдоль реки Кача"
+                     loading="lazy">
+            </div>
+            <h2 class="track-name">Прогулка вдоль реки Кача</h2>
+            <div class="track-buttons">
+                <button class="btn btn-listen" data-track="3">
+                    <i class="fas fa-play"></i> Слушать
+                </button>
+                <a href="https://edef4.pcloud.com/cfZPIKUgaZgu1HaP7Zf7p2ZZhNtw0kZ2ZZ55XZZhdT37ZppZ3zZpJZa5ZjLZzHZWLZy5ZtRZmHZ8FZXQZn8ZoVZeloQLae8abJCT6Onx34HcpJD287X/Маршрут_2_Прогулка_вдоль_реки_Кача.mp3" 
+                   class="btn btn-download" 
+                   download="Прогулка вдоль реки Кача.mp3">
+                    <i class="fas fa-download"></i> Скачать
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Аудиоплеер -->
+    <div class="audio-player" id="audioPlayer">
+        <div class="player-header">
+            <div class="player-title" id="currentTrack">Выберите трек</div>
+            <button class="close-player" id="closePlayer">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="time-display">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+            </div>
+        </div>
+        
+        <div class="player-controls">
+            <button class="player-btn" id="prevBtn">
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button class="player-btn" id="playPauseBtn">
+                <i class="fas fa-play" id="playIcon"></i>
+            </button>
+            <button class="player-btn" id="nextBtn">
+                <i class="fas fa-step-forward"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== ТРЕКИ ====================
+        const tracks = [
+            {
+                name: "С Мирой по Миру",
+                audioUrl: "https://edef3.pcloud.com/cfZTKKUgaZxJ1HaP7Zf7p2ZZmNtw0kZ2ZZ55XZZtDLXXZoVZf5ZhVZy5ZERZCzZv7ZFQZPHZ7FZvRZH5ZrzZeLZB6j9vi5EWRXV3021XdxbopWcaG4X/Маршрут%203%20с%20Мирой%20по%20Мира.mp3"
+            },
+            {
+                name: "Енисей-Батюшка",
+                audioUrl: "https://edef6.pcloud.com/cfZA4KUgaZASDHaP7Zf7p2ZZlAtw0kZ2ZZ55XZZvbdSkZppZn4ZRHZYRZF4ZHFZXRZbpZERZEHZTFZlHZP8ZlpZyDWQ7p78DUyWhqIs5R5kj7pcb3pX/Маршрут%201%20Енисей-Батюшка.mp3"
+            },
+            {
+                name: "Прогулка вдоль реки Кача",
+                audioUrl: "https://edef4.pcloud.com/cfZPIKUgaZgu1HaP7Zf7p2ZZhNtw0kZ2ZZ55XZZhdT37ZppZ3zZpJZa5ZjLZzHZWLZy5ZtRZmHZ8FZXQZn8ZoVZeloQLae8abJCT6Onx34HcpJD287X/Маршрут_2_Прогулка_вдоль_реки_Кача.mp3"
+            }
+        ];
+
+        // ==================== АУДИОПЛЕЕР ====================
+        const audioPlayer = document.getElementById('audioPlayer');
+        const currentTrackElement = document.getElementById('currentTrack');
+        const closePlayerBtn = document.getElementById('closePlayer');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const playIcon = document.getElementById('playIcon');
+        const progress = document.getElementById('progress');
+        const progressBar = document.getElementById('progressBar');
+        const currentTimeElement = document.getElementById('currentTime');
+        const durationElement = document.getElementById('duration');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const listenButtons = document.querySelectorAll('.btn-listen');
+
+        const audio = new Audio();
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+
+        // Загрузка трека
+        function loadTrack(index) {
+            currentTrackIndex = index;
+            const track = tracks[index];
+            
+            audio.src = track.audioUrl;
+            currentTrackElement.textContent = track.name;
+            
+            progress.style.width = '0%';
+            currentTimeElement.textContent = '0:00';
+            durationElement.textContent = '0:00';
+            
+            audioPlayer.classList.add('show');
+            
+            audio.load();
+            audio.play().then(() => {
+                isPlaying = true;
+                playIcon.className = 'fas fa-pause';
+                showNotification(`Играет: ${track.name}`);
+            }).catch(error => {
+                isPlaying = false;
+                playIcon.className = 'fas fa-play';
+                showNotification(`Загружен: ${track.name}. Нажмите ▶`);
+            });
+        }
+
+        // Обновление прогресса
+        audio.addEventListener('timeupdate', function() {
+            if (!isNaN(audio.duration) && audio.duration > 0) {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = `${percent}%`;
+                
+                currentTimeElement.textContent = formatTime(audio.currentTime);
+                durationElement.textContent = formatTime(audio.duration);
+            }
+        });
+
+        audio.addEventListener('loadedmetadata', function() {
+            if (!isNaN(audio.duration)) {
+                durationElement.textContent = formatTime(audio.duration);
+            }
+        });
+
+        audio.addEventListener('ended', function() {
+            playNextTrack();
+        });
+
+        // Форматирование времени
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Перемотка
+        progressBar.addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            audio.currentTime = percent * audio.duration;
+        });
+
+        // Управление
+        playPauseBtn.addEventListener('click', function() {
+            if (isPlaying) {
+                audio.pause();
+                playIcon.className = 'fas fa-play';
+            } else {
+                audio.play().then(() => {
+                    playIcon.className = 'fas fa-pause';
+                });
+            }
+            isPlaying = !isPlaying;
+        });
+
+        prevBtn.addEventListener('click', function() {
+            currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+            loadTrack(currentTrackIndex);
+        });
+
+        nextBtn.addEventListener('click', function() {
+            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+            loadTrack(currentTrackIndex);
+        });
+
+        function playNextTrack() {
+            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+            loadTrack(currentTrackIndex);
+        }
+
+        // Кнопки "Слушать"
+        listenButtons.forEach((button, index) => {
+            button.addEventListener('click', function() {
+                loadTrack(index);
+            });
+        });
+
+        // Закрытие плеера
+        closePlayerBtn.addEventListener('click', function() {
+            audio.pause();
+            isPlaying = false;
+            playIcon.className = 'fas fa-play';
+            audioPlayer.classList.remove('show');
+        });
+
+        // Уведомления
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            
+            notification.innerHTML = `
+                <i class="fas fa-music"></i>
+                <div style="flex: 1;">
+                    <div style="font-size: 1rem; font-weight: 600;">${message}</div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 10);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        document.body.removeChild(notification);
+                    }
+                }, 500);
+            }, 3000);
+        }
+
+        // Уведомления при скачивании
+        document.querySelectorAll('.btn-download').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const trackName = this.closest('.track').querySelector('.track-name').textContent;
+                showNotification(`Скачивание: ${trackName}`);
+            });
+        });
+
+        // Запуск анимаций
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.track').forEach(track => {
+                track.style.animationPlayState = 'running';
+            });
+            
+            // Оптимизация для мобильных устройств
+            if ('ontouchstart' in window) {
+                document.body.style.overflowX = 'hidden';
+                document.body.style.touchAction = 'pan-y';
+            }
+        });
+    </script>
+</body>
+</html>
