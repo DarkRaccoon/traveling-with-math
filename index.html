@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Путешествуем с математикой</title>
@@ -8,7 +9,6 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231e3799'/><circle cx='35' cy='35' r='20' fill='%233498db'/><circle cx='65' cy='65' r='20' fill='%232ecc71'/><path d='M35,35 L65,65' stroke='white' stroke-width='4' stroke-linecap='round'/><text x='50' y='85' font-family='Arial' font-size='12' fill='white' text-anchor='middle'>M+T</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231e3799'/><circle cx='35' cy='35' r='20' fill='%233498db'/><circle cx='65' cy='65' r='20' fill='%232ecc71'/><path d='M35,35 L65,65' stroke='white' stroke-width='4' stroke-linecap='round'/><text x='50' y='85' font-family='Arial' font-size='12' fill='white' text-anchor='middle'>M+T</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-   
     <style>
         * {
             margin: 0;
@@ -16,12 +16,9 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        html, body {
+        html {
             overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
         }
-
         body {
             color: white;
             min-height: 100vh;
@@ -31,37 +28,57 @@
             align-items: center;
             padding: 20px;
             background-color: #0a0a14;
+            overflow-x: hidden;
         }
-
-        /* ФОН */
+        /* ФОНОВОЕ ИЗОБРАЖЕНИЕ - ОПТИМИЗИРОВАННОЕ */
         body::before {
             content: '';
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             background-image: url('https://s6.iimage.su/s/05/uchDxJqx3uiQRpiwtnoRWz8kdCBUcokM6Nl7q0FF.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             z-index: -2;
-            opacity: 0.88;
+            opacity: 0.9;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+           
+            /* Оптимизация для мобильных */
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            will-change: transform;
+           
+            /* Убираем fixed на мобильных */
+            background-attachment: scroll;
         }
-
-        @media (max-width: 1024px) {
+        /* Медиа-запрос для десктопов */
+        @media (min-width: 1024px) {
             body::before {
-                position: absolute;
+                background-attachment: fixed;
             }
         }
-
+        /* Улучшенное затемнение фона */
         body::after {
             content: '';
             position: fixed;
-            inset: 0;
-            background: linear-gradient(rgba(10, 15, 30, 0.72), rgba(10, 15, 30, 0.52));
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                rgba(10, 15, 30, 0.7),
+                rgba(10, 15, 30, 0.5)
+            );
             z-index: -1;
             pointer-events: none;
         }
-
-        /* ЗАГОЛОВОК С ПОДСВЕТКОЙ И АНИМАЦИЕЙ */
+        /* ЗАГОЛОВОК */
         .site-title {
             font-size: clamp(2.2rem, 5vw, 3.5rem);
             font-weight: 900;
@@ -73,29 +90,27 @@
             text-shadow:
                 0 0 20px rgba(52, 152, 219, 0.7),
                 0 0 40px rgba(52, 152, 219, 0.5),
-                2px 2px 6px rgba(0, 0, 0, 0.8);
+                2px 2px 4px rgba(0, 0, 0, 0.8);
             position: relative;
             padding-bottom: 20px;
             animation: titleGlow 3s ease-in-out infinite alternate;
         }
-
         @keyframes titleGlow {
             0% {
                 text-shadow:
                     0 0 20px rgba(52, 152, 219, 0.7),
                     0 0 40px rgba(52, 152, 219, 0.5),
-                    2px 2px 6px rgba(0, 0, 0, 0.8);
+                    2px 2px 4px rgba(0, 0, 0, 0.8);
                 transform: translateY(0);
             }
             100% {
                 text-shadow:
-                    0 0 35px rgba(52, 152, 219, 0.95),
-                    0 0 70px rgba(52, 152, 219, 0.7),
-                    3px 3px 8px rgba(0, 0, 0, 0.9);
-                transform: translateY(-6px);
+                    0 0 30px rgba(52, 152, 219, 0.9),
+                    0 0 60px rgba(52, 152, 219, 0.7),
+                    3px 3px 6px rgba(0, 0, 0, 0.9);
+                transform: translateY(-5px);
             }
         }
-
         .site-title::after {
             content: '';
             position: absolute;
@@ -104,18 +119,20 @@
             transform: translateX(-50%);
             width: min(80vw, 300px);
             height: 4px;
-            background: linear-gradient(90deg, transparent, #3498db, #2ecc71, transparent);
+            background: linear-gradient(90deg,
+                transparent,
+                #3498db,
+                #2ecc71,
+                transparent);
             border-radius: 2px;
             filter: blur(1px);
-            animation: linePulse 2.5s ease-in-out infinite alternate;
+            animation: linePulse 2s ease-in-out infinite alternate;
         }
-
         @keyframes linePulse {
-            0% { width: min(60vw, 200px); opacity: 0.6; }
+            0% { width: min(60vw, 200px); opacity: 0.5; }
             100% { width: min(80vw, 300px); opacity: 1; }
         }
-
-        /* КОНТЕЙНЕР ТРЕКОВ */
+        /* КОНТЕЙНЕР ДЛЯ ТРЕКОВ */
         .tracks-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -125,8 +142,7 @@
             margin: 0 auto;
             margin-bottom: clamp(40px, 6vw, 60px);
         }
-
-        /* КАРТОЧКА */
+        /* КАРТОЧКА ТРЕКА */
         .track {
             background: rgba(255, 255, 255, 0.08);
             border-radius: 20px;
@@ -134,68 +150,118 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(8px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        box-shadow 0.4s ease;
-            contain: layout style paint;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
             height: 100%;
             min-height: 520px;
         }
-
-        @media (max-width: 768px) {
-            .track {
-                backdrop-filter: blur(5px);
-                min-height: auto;
-            }
+        .track::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent);
+            transition: left 0.7s;
         }
-
         .track:hover {
-            transform: translateY(-12px) scale(1.025);
-            box-shadow: 0 22px 50px rgba(0, 0, 0, 0.5),
-                        0 0 25px rgba(52, 152, 219, 0.25);
+            transform:
+                translateY(-15px)
+                scale(1.03);
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(52, 152, 219, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(52, 152, 219, 0.4);
         }
-
+        .track:hover::before {
+            left: 100%;
+        }
+        /* ИЗОБРАЖЕНИЕ ТРЕКА */
         .track-image {
             width: 100%;
             height: clamp(240px, 40vw, 320px);
             margin-bottom: clamp(15px, 3vw, 25px);
-            overflow: hidden;
-            border-radius: 12px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            overflow: visible;
         }
-
+        .track:hover .track-image {
+            transform: translateY(-5px);
+        }
         .track-image img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: none !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            display: block;
         }
-
         .track:hover .track-image img {
-            transform: scale(1.06);
+            transform: scale(1.08);
         }
-
+        .track-image::after {
+            display: none;
+        }
+        /* НАЗВАНИЕ ТРЕКА */
         .track-name {
             font-size: clamp(1.4rem, 3vw, 1.8rem);
             font-weight: 700;
+            color: white;
             text-align: center;
             margin-bottom: clamp(15px, 3vw, 25px);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            padding: 0 10px;
+            position: relative;
+            transition: all 0.4s ease;
             line-height: 1.3;
+            flex-shrink: 0;
         }
-
-        /* КНОПКИ С УЛУЧШЕННЫМ ОТСТУПОМ ОТ ИКОНКИ */
+        .track-name::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #3498db, transparent);
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .track:hover .track-name::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        /* КНОПКИ — ИСПРАВЛЕННЫЙ ОТСТУП ОТ ИКОНОК */
         .track-buttons {
             display: flex;
             flex-direction: column;
-            gap: clamp(13px, 2vw, 16px);
+            gap: clamp(12px, 2vw, 15px);
             width: 100%;
+            position: relative;
             margin-top: auto;
+            flex-shrink: 0;
         }
-
         .btn {
-            padding: clamp(14px, 2vw, 16px) clamp(22px, 3vw, 28px);
+            padding: clamp(14px, 2vw, 16px) clamp(22px, 3vw, 28px); /* увеличен горизонтальный padding */
             border-radius: 12px;
             border: none;
             cursor: pointer;
@@ -203,59 +269,121 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-size: clamp(1rem, 2vw, 1.1rem);
             letter-spacing: 1px;
             width: 100%;
             color: white;
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            box-shadow:
+                0 8px 20px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
             min-height: 52px;
         }
-
         .btn i {
-            margin-right: 16px;   /* ← Увеличенный отступ от иконки */
-            font-size: clamp(1.15rem, 2.2vw, 1.35rem);
-            transition: transform 0.3s ease;
+            margin-right: 16px;   /* ← Увеличенный отступ между иконкой и текстом */
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
         }
-
         .btn:hover i {
-            transform: scale(1.28) rotate(12deg);
+            transform:
+                scale(1.3)
+                rotate(15deg);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
-
-        .btn-listen  { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); border: 2px solid rgba(52, 152, 219, 0.4); }
-        .btn-listen:hover  { background: linear-gradient(135deg, #2980b9 0%, #21618c 100%); transform: translateY(-4px) scale(1.04); }
-
-        .btn-download { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); border: 2px solid rgba(46, 204, 113, 0.4); text-decoration: none; text-align: center; }
-        .btn-download:hover { background: linear-gradient(135deg, #27ae60 0%, #219653 100%); transform: translateY(-4px) scale(1.04); }
-
-        .btn-pdf { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); border: 2px solid rgba(155, 89, 182, 0.4); text-decoration: none; text-align: center; }
-        .btn-pdf:hover { background: linear-gradient(135deg, #8e44ad 0%, #7d3c98 100%); transform: translateY(-4px) scale(1.04); }
-
-        /* PDF блок */
+        .btn-listen {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border: 2px solid rgba(52, 152, 219, 0.4);
+        }
+        .btn-listen:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+            transform:
+                translateY(-5px)
+                scale(1.05);
+            box-shadow:
+                0 15px 35px rgba(52, 152, 219, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border-color: rgba(52, 152, 219, 0.7);
+        }
+        .btn-download {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            border: 2px solid rgba(46, 204, 113, 0.4);
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn-download:hover {
+            background: linear-gradient(135deg, #27ae60 0%, #219653 100%);
+            transform:
+                translateY(-5px)
+                scale(1.05);
+            box-shadow:
+                0 15px 35px rgba(46, 204, 113, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border-color: rgba(46, 204, 113, 0.7);
+        }
+        .btn-pdf {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            border: 2px solid rgba(155, 89, 182, 0.4);
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn-pdf:hover {
+            background: linear-gradient(135deg, #8e44ad 0%, #7d3c98 100%);
+            transform:
+                translateY(-5px)
+                scale(1.05);
+            box-shadow:
+                0 15px 35px rgba(155, 89, 182, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border-color: rgba(155, 89, 182, 0.7);
+        }
+        /* КОНТЕЙНЕР ДЛЯ КНОПКИ PDF */
         .pdf-container {
             width: 100%;
             max-width: min(450px, 95vw);
-            margin: 25px 0 40px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
         }
-
         .pdf-button-wrapper {
+            width: 100%;
             background: rgba(255, 255, 255, 0.08);
             border-radius: 20px;
             padding: clamp(25px, 3vw, 35px);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(8px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             text-align: center;
         }
-
         .pdf-button-wrapper:hover {
-            transform: translateY(-8px);
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(155, 89, 182, 0.2);
         }
-
-        /* Аудиоплеер */
+        .pdf-title {
+            font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+            font-weight: 700;
+            color: white;
+            margin-bottom: clamp(15px, 3vw, 25px);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .pdf-description {
+            font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: clamp(20px, 3vw, 30px);
+            line-height: 1.5;
+        }
+        /* АУДИОПЛЕЕР */
         .audio-player {
             display: none;
             position: fixed;
@@ -266,113 +394,363 @@
             background: rgba(25, 30, 45, 0.97);
             padding: clamp(15px, 3vw, 25px);
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6),
-                        0 0 30px rgba(52, 152, 219, 0.3);
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(52, 152, 219, 0.3);
             z-index: 1000;
-            border: 2px solid rgba(52, 152, 219, 0.35);
-            backdrop-filter: blur(12px);
+            border: 2px solid rgba(52, 152, 219, 0.4);
+            backdrop-filter: blur(15px);
             transition: bottom 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-
         .audio-player.show {
             display: block;
             bottom: clamp(15px, 3vw, 30px);
         }
-
-        .player-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 15px; 
-            padding-bottom: 12px; 
-            border-bottom: 2px solid rgba(52, 152, 219, 0.3); 
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: clamp(15px, 2vw, 20px);
+            padding-bottom: clamp(10px, 2vw, 15px);
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
         }
-        .player-title { font-weight: 700; font-size: clamp(1.1rem, 2vw, 1.4rem); }
-        .close-player { 
-            background: rgba(255,255,255,0.1); 
-            border: none; 
-            width: 42px; 
-            height: 42px; 
-            border-radius: 50%; 
-            color: white; 
-            font-size: 1.5rem; 
-            cursor: pointer; 
+        .player-title {
+            font-weight: 700;
+            color: white;
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            text-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+            animation: textGlow 2s ease-in-out infinite alternate;
         }
-        .progress-bar { 
-            width: 100%; 
-            height: 7px; 
-            background: rgba(255,255,255,0.12); 
-            border-radius: 4px; 
-            cursor: pointer; 
-            margin: 15px 0; 
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 10px rgba(52, 152, 219, 0.5); }
+            100% { text-shadow: 0 0 20px rgba(52, 152, 219, 0.8); }
         }
-        .progress { 
-            height: 100%; 
-            background: linear-gradient(90deg, #3498db, #2ecc71); 
-            width: 0%; 
-            transition: width 0.1s linear; 
+        .close-player {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: clamp(35px, 6vw, 45px);
+            height: clamp(35px, 6vw, 45px);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .player-controls { 
-            display: flex; 
-            justify-content: center; 
-            gap: 25px; 
-            margin-top: 10px; 
+        .close-player:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: rotate(90deg) scale(1.1);
         }
-        .player-btn { 
-            width: 62px; 
-            height: 62px; 
-            border-radius: 50%; 
-            background: linear-gradient(135deg, #3498db, #2ecc71); 
-            border: none; 
-            color: white; 
-            font-size: 1.6rem; 
-            cursor: pointer; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4); 
+        .progress-container {
+            width: 100%;
+            margin: clamp(15px, 2vw, 20px) 0;
         }
-
-        /* Анимации появления */
+        .progress-bar {
+            width: 100%;
+            height: clamp(6px, 1vw, 8px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.1s linear;
+            position: relative;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.6);
+        }
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: clamp(20px, 3vw, 30px);
+            margin-top: clamp(15px, 3vw, 25px);
+        }
+        .player-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%);
+            border: none;
+            width: clamp(50px, 8vw, 70px);
+            height: clamp(50px, 8vw, 70px);
+            border-radius: 50%;
+            cursor: pointer;
+            color: white;
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                0 10px 25px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(52, 152, 219, 0.4);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .player-btn:hover {
+            transform: scale(1.15);
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(52, 152, 219, 0.6);
+        }
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        /* АНИМАЦИИ ПОЯВЛЕНИЯ КАРТОЧЕК */
         @keyframes trackAppear {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
-
         .track {
-            animation: trackAppear 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: trackAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
             opacity: 0;
         }
-
         .track:nth-child(1) { animation-delay: 0.1s; }
-        .track:nth-child(2) { animation-delay: 0.25s; }
-        .track:nth-child(3) { animation-delay: 0.4s; }
-
-        /* Уведомления */
+        .track:nth-child(2) { animation-delay: 0.3s; }
+        .track:nth-child(3) { animation-delay: 0.5s; }
+        /* УВЕДОМЛЕНИЯ */
         .notification {
             position: fixed;
-            top: 25px;
-            right: 25px;
+            top: clamp(20px, 4vw, 30px);
+            right: clamp(15px, 4vw, 30px);
             background: linear-gradient(135deg, #2ecc71, #27ae60);
             color: white;
-            padding: 16px 22px;
-            border-radius: 14px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            padding: clamp(15px, 2vw, 20px) clamp(18px, 2.5vw, 25px);
+            border-radius: 15px;
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.4);
             z-index: 2000;
             display: flex;
             align-items: center;
-            max-width: 380px;
+            max-width: min(400px, 90vw);
             transform: translateX(120%);
-            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        .notification.show {
+            transform: translateX(0);
+        }
+        .notification i {
+            font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+            margin-right: clamp(10px, 2vw, 15px);
+            animation: iconBounce 1s infinite alternate;
+        }
+        @keyframes iconBounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); }
+        }
+        /* АДАПТИВНОСТЬ */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+                justify-content: flex-start;
+                padding-top: clamp(30px, 8vh, 60px);
+                -webkit-overflow-scrolling: touch;
+                overflow-x: hidden;
+            }
+           
+            body::before {
+                background-attachment: scroll;
+                opacity: 0.8;
+            }
+           
+            body::after {
+                background: rgba(10, 15, 30, 0.6);
+            }
+            .tracks-container {
+                grid-template-columns: 1fr;
+                max-width: 450px;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+            .track {
+                min-height: auto;
+                padding: 18px;
+                backdrop-filter: blur(5px);
+            }
+            .track-buttons {
+                margin-top: 15px;
+                gap: 10px;
+            }
+           
+            .site-title {
+                font-size: clamp(1.8rem, 4vw, 2.5rem);
+                margin-bottom: 40px;
+                animation: none;
+                text-shadow:
+                    0 0 15px rgba(52, 152, 219, 0.7),
+                    2px 2px 4px rgba(0, 0, 0, 0.8);
+            }
+           
+            .site-title::after {
+                animation: none;
+            }
+           
+            .track-image {
+                height: 220px;
+                margin-bottom: 15px;
+            }
+           
+            .btn {
+                min-height: 48px;
+                padding: 14px 22px;
+                font-size: 1rem;
+            }
+           
+            .pdf-container {
+                margin-top: 10px;
+                margin-bottom: 30px;
+            }
+           
+            .pdf-button-wrapper {
+                padding: 20px;
+            }
+           
+            .pdf-title {
+                font-size: 1.4rem;
+            }
+           
+            .audio-player {
+                width: 95vw;
+                padding: 15px;
+            }
+           
+            .player-controls {
+                gap: 15px;
+            }
+           
+            .player-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 1.4rem;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+                padding-top: 25px;
+            }
+           
+            .track-image {
+                height: 200px;
+            }
+           
+            .track {
+                padding: 15px;
+                border-radius: 15px;
+            }
+           
+            .track-name {
+                font-size: 1.3rem;
+                margin-bottom: 12px;
+            }
+           
+            .btn {
+                min-height: 45px;
+                padding: 12px 20px;
+                font-size: 0.95rem;
+            }
+           
+            .site-title {
+                font-size: 1.8rem;
+                margin-bottom: 30px;
+                padding-bottom: 15px;
+            }
+           
+            .pdf-button-wrapper {
+                padding: 18px;
+            }
+           
+            .pdf-title {
+                font-size: 1.2rem;
+            }
+           
+            .notification {
+                top: 15px;
+                right: 10px;
+                padding: 12px 15px;
+                max-width: 85vw;
+            }
+           
+            .notification i {
+                font-size: 1.2rem;
+                margin-right: 10px;
+            }
+        }
+       
+        @media (max-width: 360px) {
+            .track-image {
+                height: 180px;
+            }
+           
+            .track-name {
+                font-size: 1.2rem;
+            }
+           
+            .btn {
+                font-size: 0.9rem;
+                padding: 10px 18px;
+                min-height: 42px;
+            }
+           
+            .btn i {
+                margin-right: 12px;
+            }
         }
 
-        .notification.show { transform: translateX(0); }
-
-        @media (max-width: 768px) {
-            .tracks-container { grid-template-columns: 1fr; max-width: 460px; gap: 22px; }
-            .track { padding: 18px; }
-            .btn i { margin-right: 13px; }
+        /* ПРЕДОТВРАЩЕНИЕ БЛОКАДЫ КАСАНИЯ */
+        @media (hover: none) and (pointer: coarse) {
+            .track:hover {
+                transform: none;
+                box-shadow:
+                    0 10px 30px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+            .btn:hover, .player-btn:hover, .close-player:hover {
+                transform: none;
+            }
+            .track:hover .track-image {
+                transform: none;
+            }
+           
+            .track:hover .track-image img {
+                transform: none;
+            }
+           
+            .pdf-button-wrapper:hover {
+                transform: none;
+                box-shadow:
+                    0 10px 30px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+            .btn:active, .player-btn:active, .close-player:active {
+                transform: scale(0.98);
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .site-title { animation: none; }
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -386,7 +764,8 @@
                 <img src="https://s6.iimage.su/s/05/uW6qG6txkCGh8WONt86zF4zzXpn1NoKCwF1yi4Oo.jpg"
                      srcset="https://s6.iimage.su/s/05/uW6qG6txkCGh8WONt86zF4zzXpn1NoKCwF1yi4Oo.jpg 800w"
                      sizes="(max-width: 600px) 480px, 800px"
-                     alt="С Мирой по Проспекту Мира" loading="lazy">
+                     alt="С Мирой по Проспекту Мира"
+                     loading="lazy">
             </div>
             <h2 class="track-name">С Мирой по Проспекту Мира</h2>
             <div class="track-buttons">
@@ -394,7 +773,8 @@
                     <i class="fas fa-play"></i> Слушать
                 </button>
                 <a href="https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/WithMiraAlongMira.mp3"
-                   class="btn btn-download" download="С Мирой по Проспекту Мира.mp3">
+                   class="btn btn-download"
+                   download="С Мирой по Проспекту Мира.mp3">
                     <i class="fas fa-download"></i> Скачать
                 </a>
             </div>
@@ -406,7 +786,8 @@
                 <img src="https://s6.iimage.su/s/05/uDMdBCrxS3wnlrGb1dheh2gWS3MVHEX3CrFvz8CR.jpg"
                      srcset="https://s6.iimage.su/s/05/uDMdBCrxS3wnlrGb1dheh2gWS3MVHEX3CrFvz8CR.jpg 800w"
                      sizes="(max-width: 600px) 480px, 800px"
-                     alt="Енисей-Батюшка" loading="lazy">
+                     alt="Енисей-Батюшка"
+                     loading="lazy">
             </div>
             <h2 class="track-name">Енисей-Батюшка</h2>
             <div class="track-buttons">
@@ -414,7 +795,8 @@
                     <i class="fas fa-play"></i> Слушать
                 </button>
                 <a href="https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/YeniseiFather.mp3"
-                   class="btn btn-download" download="Енисей-Батюшка.mp3">
+                   class="btn btn-download"
+                   download="Енисей-Батюшка.mp3">
                     <i class="fas fa-download"></i> Скачать
                 </a>
             </div>
@@ -426,7 +808,8 @@
                 <img src="https://s6.iimage.su/s/05/uotfKZlx4REnt3zJL3o0fqTYNR860rGVcojEkotz.jpg"
                      srcset="https://s6.iimage.su/s/05/uotfKZlx4REnt3zJL3o0fqTYNR860rGVcojEkotz.jpg 800w"
                      sizes="(max-width: 600px) 480px, 800px"
-                     alt="Прогулка вдоль реки Кача" loading="lazy">
+                     alt="Прогулка вдоль реки Кача"
+                     loading="lazy">
             </div>
             <h2 class="track-name">Прогулка вдоль реки Кача</h2>
             <div class="track-buttons">
@@ -434,29 +817,31 @@
                     <i class="fas fa-play"></i> Слушать
                 </button>
                 <a href="https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/AWalkAlongtheKachaRiver.mp3"
-                   class="btn btn-download" download="Прогулка вдоль реки Кача.mp3">
+                   class="btn btn-download"
+                   download="Прогулка вдоль реки Кача.mp3">
                     <i class="fas fa-download"></i> Скачать
                 </a>
             </div>
         </div>
     </div>
    
-    <!-- PDF -->
     <div class="pdf-container">
         <div class="pdf-button-wrapper">
             <h2 class="pdf-title">Сборник задач по математике</h2>
             <a href="https://raw.githubusercontent.com/DarkRaccoon/traveling-with-math/main/Collectionofmathproblems.pdf"
-               class="btn btn-pdf" download="Сборник задач по математике.pdf">
+               class="btn btn-pdf"
+               download="Сборник задач по математике.pdf">
                 <i class="fas fa-file-pdf"></i> Скачать PDF сборник
             </a>
         </div>
     </div>
-
-    <!-- Аудиоплеер -->
+   
     <div class="audio-player" id="audioPlayer">
         <div class="player-header">
             <div class="player-title" id="currentTrack">Выберите трек</div>
-            <button class="close-player" id="closePlayer"><i class="fas fa-times"></i></button>
+            <button class="close-player" id="closePlayer">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
        
         <div class="progress-container">
@@ -470,17 +855,32 @@
         </div>
        
         <div class="player-controls">
-            <button class="player-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
-            <button class="player-btn" id="playPauseBtn"><i class="fas fa-play" id="playIcon"></i></button>
-            <button class="player-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
+            <button class="player-btn" id="prevBtn">
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button class="player-btn" id="playPauseBtn">
+                <i class="fas fa-play" id="playIcon"></i>
+            </button>
+            <button class="player-btn" id="nextBtn">
+                <i class="fas fa-step-forward"></i>
+            </button>
         </div>
     </div>
 
     <script>
         const tracks = [
-            { name: "С Мирой по Проспекту Мира", audioUrl: "https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/WithMiraAlongMira.mp3" },
-            { name: "Енисей-Батюшка", audioUrl: "https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/YeniseiFather.mp3" },
-            { name: "Прогулка вдоль реки Кача", audioUrl: "https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/AWalkAlongtheKachaRiver.mp3" }
+            {
+                name: "С Мирой по Проспекту Мира",
+                audioUrl: "https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/WithMiraAlongMira.mp3"
+            },
+            {
+                name: "Енисей-Батюшка",
+                audioUrl: "https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/YeniseiFather.mp3"
+            },
+            {
+                name: "Прогулка вдоль реки Кача",
+                audioUrl: "https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/AWalkAlongtheKachaRiver.mp3"
+            }
         ];
 
         const audioPlayer = document.getElementById('audioPlayer');
@@ -495,7 +895,6 @@
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const listenButtons = document.querySelectorAll('.btn-listen');
-
         const audio = new Audio();
         let currentTrackIndex = 0;
         let isPlaying = false;
@@ -503,15 +902,17 @@
         function loadTrack(index) {
             currentTrackIndex = index;
             const track = tracks[index];
+           
             audio.src = track.audioUrl;
             currentTrackElement.textContent = track.name;
+           
             progress.style.width = '0%';
             currentTimeElement.textContent = '0:00';
             durationElement.textContent = '0:00';
-
+           
             audioPlayer.classList.add('show');
+           
             audio.load();
-
             audio.play().then(() => {
                 isPlaying = true;
                 playIcon.className = 'fas fa-pause';
@@ -519,10 +920,11 @@
             }).catch(() => {
                 isPlaying = false;
                 playIcon.className = 'fas fa-play';
+                showNotification(`Загружен: ${track.name}. Нажмите ▶`);
             });
         }
 
-        audio.addEventListener('timeupdate', () => {
+        audio.addEventListener('timeupdate', function() {
             if (!isNaN(audio.duration) && audio.duration > 0) {
                 const percent = (audio.currentTime / audio.duration) * 100;
                 progress.style.width = `${percent}%`;
@@ -531,11 +933,15 @@
             }
         });
 
-        audio.addEventListener('loadedmetadata', () => {
-            if (!isNaN(audio.duration)) durationElement.textContent = formatTime(audio.duration);
+        audio.addEventListener('loadedmetadata', function() {
+            if (!isNaN(audio.duration)) {
+                durationElement.textContent = formatTime(audio.duration);
+            }
         });
 
-        audio.addEventListener('ended', () => playNextTrack());
+        audio.addEventListener('ended', function() {
+            playNextTrack();
+        });
 
         function formatTime(seconds) {
             if (isNaN(seconds)) return '0:00';
@@ -544,29 +950,30 @@
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
-        progressBar.addEventListener('click', (e) => {
-            const rect = progressBar.getBoundingClientRect();
+        progressBar.addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
             const percent = (e.clientX - rect.left) / rect.width;
             audio.currentTime = percent * audio.duration;
         });
 
-        playPauseBtn.addEventListener('click', () => {
+        playPauseBtn.addEventListener('click', function() {
             if (isPlaying) {
                 audio.pause();
                 playIcon.className = 'fas fa-play';
             } else {
-                audio.play();
-                playIcon.className = 'fas fa-pause';
+                audio.play().then(() => {
+                    playIcon.className = 'fas fa-pause';
+                });
             }
             isPlaying = !isPlaying;
         });
 
-        prevBtn.addEventListener('click', () => {
+        prevBtn.addEventListener('click', function() {
             currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
             loadTrack(currentTrackIndex);
         });
 
-        nextBtn.addEventListener('click', () => {
+        nextBtn.addEventListener('click', function() {
             currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
             loadTrack(currentTrackIndex);
         });
@@ -576,9 +983,13 @@
             loadTrack(currentTrackIndex);
         }
 
-        listenButtons.forEach((btn, i) => btn.addEventListener('click', () => loadTrack(i)));
+        listenButtons.forEach((button, index) => {
+            button.addEventListener('click', function() {
+                loadTrack(index);
+            });
+        });
 
-        closePlayerBtn.addEventListener('click', () => {
+        closePlayerBtn.addEventListener('click', function() {
             audio.pause();
             isPlaying = false;
             playIcon.className = 'fas fa-play';
@@ -586,28 +997,50 @@
         });
 
         function showNotification(message) {
-            const notif = document.createElement('div');
-            notif.className = 'notification';
-            notif.innerHTML = `<i class="fas fa-music"></i><div style="flex:1"><div style="font-weight:600">${message}</div></div>`;
-            document.body.appendChild(notif);
-            setTimeout(() => notif.classList.add('show'), 10);
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+           
+            notification.innerHTML = `
+                <i class="fas fa-music"></i>
+                <div style="flex: 1;">
+                    <div style="font-size: 1rem; font-weight: 600;">${message}</div>
+                </div>
+            `;
+           
+            document.body.appendChild(notification);
+           
+            setTimeout(() => notification.classList.add('show'), 10);
+           
             setTimeout(() => {
-                notif.classList.remove('show');
-                setTimeout(() => notif.remove(), 500);
-            }, 2800);
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        document.body.removeChild(notification);
+                    }
+                }, 500);
+            }, 3000);
         }
 
-        document.querySelectorAll('.btn-download, .btn-pdf').forEach(el => {
-            el.addEventListener('click', () => {
-                const name = el.closest('.track') ? 
-                    el.closest('.track').querySelector('.track-name').textContent : 
-                    'Сборника задач';
-                showNotification(`Скачивание: ${name}`);
+        document.querySelectorAll('.btn-download').forEach(link => {
+            link.addEventListener('click', function() {
+                const trackName = this.closest('.track').querySelector('.track-name').textContent;
+                showNotification(`Скачивание: ${trackName}`);
             });
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.track').forEach(t => t.style.opacity = '1');
+        document.querySelector('.btn-pdf').addEventListener('click', function() {
+            showNotification('Скачивание сборника задач по математике');
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.track').forEach(track => {
+                track.style.animationPlayState = 'running';
+            });
+           
+            if ('ontouchstart' in window) {
+                document.body.style.overflowX = 'hidden';
+                document.body.style.touchAction = 'pan-y';
+            }
         });
     </script>
 </body>
