@@ -485,7 +485,7 @@
             audio.play().then(() => {
                 isPlaying = true;
                 playIcon.className = 'fas fa-pause';
-                showNotification(`Играет: ${track.name}`);
+                showNotification(` Играет: ${track.name}`);
             }).catch(() => {
                 isPlaying = false;
                 playIcon.className = 'fas fa-play';
@@ -573,7 +573,7 @@
                 const name = el.closest('.track') ? 
                     el.closest('.track').querySelector('.track-name').textContent : 
                     'Сборника задач';
-                showNotification(`Скачивание: ${name}`);
+                showNotification(` Скачивание: ${name}`);
             });
         });
 
