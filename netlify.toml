@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/*"
+  to = "https://traveling-with-math.vercel.app/:splat"
+  status = 301
+  force = true
