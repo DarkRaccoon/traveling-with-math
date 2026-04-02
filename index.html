@@ -33,7 +33,7 @@
             background-color: #0a0a14;
         }
 
-        /* ФОН — оптимизировано */
+        /* ФОН */
         body::before {
             content: '';
             position: fixed;
@@ -44,7 +44,6 @@
             background-repeat: no-repeat;
             z-index: -2;
             opacity: 0.88;
-            image-rendering: crisp-edges;
         }
 
         @media (max-width: 1024px) {
@@ -62,7 +61,7 @@
             pointer-events: none;
         }
 
-        /* ЗАГОЛОВОК */
+        /* ЗАГОЛОВОК С АНИМАЦИЕЙ */
         .site-title {
             font-size: clamp(2.2rem, 5vw, 3.5rem);
             font-weight: 900;
@@ -71,9 +70,30 @@
             color: white;
             text-align: center;
             margin-bottom: clamp(30px, 5vw, 60px);
-            text-shadow: 0 0 20px rgba(52, 152, 219, 0.6), 2px 2px 6px rgba(0, 0, 0, 0.8);
+            text-shadow:
+                0 0 20px rgba(52, 152, 219, 0.7),
+                0 0 40px rgba(52, 152, 219, 0.5),
+                2px 2px 6px rgba(0, 0, 0, 0.8);
             position: relative;
             padding-bottom: 20px;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% {
+                text-shadow:
+                    0 0 20px rgba(52, 152, 219, 0.7),
+                    0 0 40px rgba(52, 152, 219, 0.5),
+                    2px 2px 6px rgba(0, 0, 0, 0.8);
+                transform: translateY(0);
+            }
+            100% {
+                text-shadow:
+                    0 0 35px rgba(52, 152, 219, 0.95),
+                    0 0 70px rgba(52, 152, 219, 0.7),
+                    3px 3px 8px rgba(0, 0, 0, 0.9);
+                transform: translateY(-6px);
+            }
         }
 
         .site-title::after {
@@ -86,6 +106,13 @@
             height: 4px;
             background: linear-gradient(90deg, transparent, #3498db, #2ecc71, transparent);
             border-radius: 2px;
+            filter: blur(1px);
+            animation: linePulse 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes linePulse {
+            0% { width: min(60vw, 200px); opacity: 0.6; }
+            100% { width: min(80vw, 300px); opacity: 1; }
         }
 
         /* КОНТЕЙНЕР ТРЕКОВ */
@@ -99,7 +126,7 @@
             margin-bottom: clamp(40px, 6vw, 60px);
         }
 
-        /* КАРТОЧКА — сильно оптимизирована */
+        /* КАРТОЧКА */
         .track {
             background: rgba(255, 255, 255, 0.08);
             border-radius: 20px;
@@ -122,7 +149,6 @@
             .track {
                 backdrop-filter: blur(5px);
                 min-height: auto;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
             }
         }
 
@@ -132,7 +158,6 @@
                         0 0 25px rgba(52, 152, 219, 0.25);
         }
 
-        /* Изображение */
         .track-image {
             width: 100%;
             height: clamp(240px, 40vw, 320px);
@@ -146,14 +171,12 @@
             height: 100%;
             object-fit: contain;
             transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: block;
         }
 
         .track:hover .track-image img {
             transform: scale(1.06);
         }
 
-        /* Название трека */
         .track-name {
             font-size: clamp(1.4rem, 3vw, 1.8rem);
             font-weight: 700;
@@ -162,7 +185,7 @@
             line-height: 1.3;
         }
 
-        /* Кнопки */
+        /* === КНОПКИ С УЛУЧШЕННЫМ ОТСТУПОМ ОТ ИКОНКИ === */
         .track-buttons {
             display: flex;
             flex-direction: column;
@@ -172,7 +195,7 @@
         }
 
         .btn {
-            padding: clamp(14px, 2vw, 16px) clamp(18px, 2.5vw, 25px);
+            padding: clamp(14px, 2vw, 16px) clamp(20px, 2.5vw, 28px);
             border-radius: 12px;
             border: none;
             cursor: pointer;
@@ -191,7 +214,7 @@
         }
 
         .btn i {
-            margin-right: clamp(8px, 1.5vw, 12px);
+            margin-right: 14px;           /* ← Увеличенный отступ от иконки */
             font-size: clamp(1.1rem, 2vw, 1.3rem);
             transition: transform 0.3s ease;
         }
@@ -200,39 +223,14 @@
             transform: scale(1.25) rotate(12deg);
         }
 
-        .btn-listen {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            border: 2px solid rgba(52, 152, 219, 0.4);
-        }
+        .btn-listen  { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); border: 2px solid rgba(52, 152, 219, 0.4); }
+        .btn-listen:hover  { background: linear-gradient(135deg, #2980b9 0%, #21618c 100%); transform: translateY(-4px) scale(1.04); }
 
-        .btn-listen:hover {
-            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
-            transform: translateY(-4px) scale(1.04);
-        }
+        .btn-download { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); border: 2px solid rgba(46, 204, 113, 0.4); text-decoration: none; text-align: center; }
+        .btn-download:hover { background: linear-gradient(135deg, #27ae60 0%, #219653 100%); transform: translateY(-4px) scale(1.04); }
 
-        .btn-download {
-            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-            border: 2px solid rgba(46, 204, 113, 0.4);
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .btn-download:hover {
-            background: linear-gradient(135deg, #27ae60 0%, #219653 100%);
-            transform: translateY(-4px) scale(1.04);
-        }
-
-        .btn-pdf {
-            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
-            border: 2px solid rgba(155, 89, 182, 0.4);
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .btn-pdf:hover {
-            background: linear-gradient(135deg, #8e44ad 0%, #7d3c98 100%);
-            transform: translateY(-4px) scale(1.04);
-        }
+        .btn-pdf { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); border: 2px solid rgba(155, 89, 182, 0.4); text-decoration: none; text-align: center; }
+        .btn-pdf:hover { background: linear-gradient(135deg, #8e44ad 0%, #7d3c98 100%); transform: translateY(-4px) scale(1.04); }
 
         /* PDF блок */
         .pdf-container {
@@ -255,7 +253,6 @@
 
         .pdf-button-wrapper:hover {
             transform: translateY(-8px);
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
         }
 
         /* Аудиоплеер */
@@ -282,7 +279,6 @@
             bottom: clamp(15px, 3vw, 30px);
         }
 
-        /* Остальные стили плеера оставлены почти без изменений (они лёгкие) */
         .player-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 2px solid rgba(52, 152, 219, 0.3); }
         .player-title { font-weight: 700; font-size: clamp(1.1rem, 2vw, 1.4rem); }
         .close-player { background: rgba(255,255,255,0.1); border: none; width: 42px; height: 42px; border-radius: 50%; color: white; font-size: 1.5rem; cursor: pointer; }
@@ -291,7 +287,7 @@
         .player-controls { display: flex; justify-content: center; gap: 25px; margin-top: 10px; }
         .player-btn { width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(135deg, #3498db, #2ecc71); border: none; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.4); }
 
-        /* Анимации появления */
+        /* Анимации */
         @keyframes trackAppear {
             from { opacity: 0; transform: translateY(40px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
@@ -326,23 +322,14 @@
 
         .notification.show { transform: translateX(0); }
 
-        /* Адаптив + снижение нагрузки */
         @media (max-width: 768px) {
             .tracks-container { grid-template-columns: 1fr; max-width: 460px; gap: 22px; }
             .track { padding: 18px; }
-            .btn { min-height: 48px; }
-            .site-title { margin-bottom: 40px; }
+            .btn i { margin-right: 12px; }   /* чуть меньше на мобильных */
         }
 
-        @media (max-width: 480px) {
-            body { padding: 12px; padding-top: 25px; }
-            .track-image { height: 210px; }
-        }
-
-        /* Уважение к настройкам пользователя */
         @media (prefers-reduced-motion: reduce) {
-            * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-            .track:hover { transform: none; }
+            .site-title { animation: none; }
         }
     </style>
 </head>
@@ -411,10 +398,10 @@
         </div>
     </div>
    
-    <!-- PDF -->
     <div class="pdf-container">
         <div class="pdf-button-wrapper">
             <h2 class="pdf-title">Сборник задач по математике</h2>
+           <h2></h2>
             <a href="https://raw.githubusercontent.com/DarkRaccoon/traveling-with-math/main/Collectionofmathproblems.pdf"
                class="btn btn-pdf" download="Сборник задач по математике.pdf">
                 <i class="fas fa-file-pdf"></i> Скачать PDF сборник
@@ -422,7 +409,7 @@
         </div>
     </div>
 
-    <!-- Аудиоплеер (оставлен почти без изменений) -->
+    <!-- Аудиоплеер -->
     <div class="audio-player" id="audioPlayer">
         <div class="player-header">
             <div class="player-title" id="currentTrack">Выберите трек</div>
@@ -485,7 +472,7 @@
             audio.play().then(() => {
                 isPlaying = true;
                 playIcon.className = 'fas fa-pause';
-                showNotification(` Играет: ${track.name}`);
+                showNotification(`Играет: ${track.name}`);
             }).catch(() => {
                 isPlaying = false;
                 playIcon.className = 'fas fa-play';
@@ -567,17 +554,15 @@
             }, 2800);
         }
 
-        // Уведомления при скачивании
         document.querySelectorAll('.btn-download, .btn-pdf').forEach(el => {
             el.addEventListener('click', () => {
                 const name = el.closest('.track') ? 
                     el.closest('.track').querySelector('.track-name').textContent : 
                     'Сборника задач';
-                showNotification(` Скачивание: ${name}`);
+                showNotification(`Скачивание: ${name}`);
             });
         });
 
-        // Запуск
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.track').forEach(t => t.style.opacity = '1');
         });
