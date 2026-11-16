@@ -3,11 +3,11 @@
 <head>
    
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Путешествуем с математикой</title>
    
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231e3799'/><circle cx='35' cy='35' r='20' fill='%233498db'/><circle cx='65' cy='65' r='20' fill='%232ecc71'/><path d='M35,35 L65,65' stroke='white' stroke-width='4' stroke-linecap='round'/><text x='50' y='85' font-family='Arial' font-size='12' fill='white' text-anchor='middle'>M+T</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231e3799'/><circle cx='35' cy='35' r='20' fill='%233498db'/><circle cx='65' cy='65' r='20' fill='%232ecc71'/><path d='M35,35 L65,65' stroke='white' stroke-width='4' stroke-linecap='round'/><text x='50' y='85' font-family='Arial' font-size='12' fill='white' text-anchor='middle'>M+T</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231e3799'/%3E%3Ccircle cx='35' cy='35' r='20' fill='%233498db'/%3E%3Ccircle cx='65' cy='65' r='20' fill='%232ecc71'/%3E%3Cpath d='M35,35 L65,65' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3Ctext x='50' y='85' font-family='Arial' font-size='12' fill='white' text-anchor='middle'%3EM+T%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -30,47 +30,24 @@
             background-color: #0a0a14;
             overflow-x: hidden;
         }
-        /* ФОНОВОЕ ИЗОБРАЖЕНИЕ - ОПТИМИЗИРОВАННОЕ */
+        /* ФОНОВОЕ ИЗОБРАЖЕНИЕ */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            inset: 0;
             background-image: url('https://s6.iimage.su/s/16/u5jcrrCxy6H1SRkYYVm3dc6EkLjm4yO947FYCiwjt.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             z-index: -2;
             opacity: 0.9;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-           
-            /* Оптимизация для мобильных */
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            will-change: transform;
-           
-            /* Убираем fixed на мобильных */
-            background-attachment: scroll;
-        }
-        /* Медиа-запрос для десктопов */
-        @media (min-width: 1024px) {
-            body::before {
-                background-attachment: fixed;
-            }
+            pointer-events: none;
         }
         /* Улучшенное затемнение фона */
         body::after {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            inset: 0;
             background: linear-gradient(
                 rgba(10, 15, 30, 0.7),
                 rgba(10, 15, 30, 0.5)
@@ -385,11 +362,9 @@
         }
         /* АУДИОПЛЕЕР */
         .audio-player {
-            display: none;
             position: fixed;
-            bottom: -100%;
+            bottom: clamp(15px, 3vw, 30px);
             left: 50%;
-            transform: translateX(-50%);
             width: min(600px, 95vw);
             background: rgba(25, 30, 45, 0.97);
             padding: clamp(15px, 3vw, 25px);
@@ -400,11 +375,35 @@
             z-index: 1000;
             border: 2px solid rgba(52, 152, 219, 0.4);
             backdrop-filter: blur(15px);
-            transition: bottom 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* скрыт: уехал вниз, невидим и недоступен для кликов и Tab */
+            transform: translate(-50%, calc(100% + 60px));
+            visibility: hidden;
+            opacity: 0;
+            transition:
+                transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.3s ease,
+                visibility 0s linear 0.5s;
         }
         .audio-player.show {
-            display: block;
-            bottom: clamp(15px, 3vw, 30px);
+            transform: translate(-50%, 0);
+            visibility: visible;
+            opacity: 1;
+            transition:
+                transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.3s ease,
+                visibility 0s;
+        }
+        /* чтобы плеер не перекрывал нижнюю карточку */
+        body.player-open .pdf-container {
+            margin-bottom: 220px;
+        }
+        /* видимый фокус для клавиатуры */
+        .btn:focus-visible,
+        .player-btn:focus-visible,
+        .close-player:focus-visible,
+        .progress-bar:focus-visible {
+            outline: 3px solid #ffffff;
+            outline-offset: 3px;
         }
         .player-header {
             display: flex;
@@ -518,8 +517,7 @@
             }
         }
         .track {
-            animation: trackAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            opacity: 0;
+            animation: trackAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
         }
         .track:nth-child(1) { animation-delay: 0.1s; }
         .track:nth-child(2) { animation-delay: 0.3s; }
@@ -546,6 +544,9 @@
         }
         .notification.show {
             transform: translateX(0);
+        }
+        .notification.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
         }
         .notification i {
             font-size: clamp(1.4rem, 2.5vw, 1.8rem);
@@ -762,14 +763,12 @@
         <div class="track">
             <div class="track-image">
                 <img src="https://s6.iimage.su/s/16/uZdA9kXxUG5HXWnPgSR1Cu7yFuemDyh7WzN9OmjPz.jpg"
-                     srcset="https://s6.iimage.su/s/16/uZdA9kXxUG5HXWnPgSR1Cu7yFuemDyh7WzN9OmjPz.jpg 800w"
-                     sizes="(max-width: 600px) 480px, 800px"
                      alt="С Мирой по Проспекту Мира"
                      loading="lazy">
             </div>
             <h2 class="track-name">С Мирой по Проспекту Мира</h2>
             <div class="track-buttons">
-                <button class="btn btn-listen" data-track="1">
+                <button type="button" class="btn btn-listen" data-track="1">
                     <i class="fas fa-play"></i> Слушать
                 </button>
                 <a href="https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/WithMiraAlongMira.mp3"
@@ -784,14 +783,12 @@
         <div class="track">
             <div class="track-image">
                 <img src="https://s6.iimage.su/s/16/uwKy9kFx9rniEzJYCk1CZoaMdoK48qlJMXwuXfD7D.jpg"
-                     srcset="https://s6.iimage.su/s/16/uwKy9kFx9rniEzJYCk1CZoaMdoK48qlJMXwuXfD7D.jpg 800w"
-                     sizes="(max-width: 600px) 480px, 800px"
                      alt="Енисей-Батюшка"
                      loading="lazy">
             </div>
             <h2 class="track-name">Енисей-Батюшка</h2>
             <div class="track-buttons">
-                <button class="btn btn-listen" data-track="2">
+                <button type="button" class="btn btn-listen" data-track="2">
                     <i class="fas fa-play"></i> Слушать
                 </button>
                 <a href="https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/YeniseiFather.mp3"
@@ -806,14 +803,12 @@
         <div class="track">
             <div class="track-image">
                 <img src="https://s6.iimage.su/s/16/uWOV6pTxB6G96LF9JkwdJK02rActCaHUuNQyOv4Jp.jpg"
-                     srcset="https://s6.iimage.su/s/16/uWOV6pTxB6G96LF9JkwdJK02rActCaHUuNQyOv4Jp.jpg 800w"
-                     sizes="(max-width: 600px) 480px, 800px"
                      alt="Прогулка вдоль реки Кача"
                      loading="lazy">
             </div>
             <h2 class="track-name">Прогулка вдоль реки Кача</h2>
             <div class="track-buttons">
-                <button class="btn btn-listen" data-track="3">
+                <button type="button" class="btn btn-listen" data-track="3">
                     <i class="fas fa-play"></i> Слушать
                 </button>
                 <a href="https://raw.githubusercontent.com/DarkRaccoon/audio/refs/heads/master/AWalkAlongtheKachaRiver.mp3"
@@ -839,13 +834,13 @@
     <div class="audio-player" id="audioPlayer">
         <div class="player-header">
             <div class="player-title" id="currentTrack">Выберите трек</div>
-            <button class="close-player" id="closePlayer">
+            <button class="close-player" id="closePlayer" type="button" aria-label="Закрыть плеер">
                 <i class="fas fa-times"></i>
             </button>
         </div>
        
         <div class="progress-container">
-            <div class="progress-bar" id="progressBar">
+            <div class="progress-bar" id="progressBar" role="slider" tabindex="0" aria-label="Перемотка" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                 <div class="progress" id="progress"></div>
             </div>
             <div class="time-display">
@@ -855,13 +850,13 @@
         </div>
        
         <div class="player-controls">
-            <button class="player-btn" id="prevBtn">
+            <button class="player-btn" id="prevBtn" type="button" aria-label="Предыдущий трек">
                 <i class="fas fa-step-backward"></i>
             </button>
-            <button class="player-btn" id="playPauseBtn">
+            <button class="player-btn" id="playPauseBtn" type="button" aria-label="Воспроизвести / пауза">
                 <i class="fas fa-play" id="playIcon"></i>
             </button>
-            <button class="player-btn" id="nextBtn">
+            <button class="player-btn" id="nextBtn" type="button" aria-label="Следующий трек">
                 <i class="fas fa-step-forward"></i>
             </button>
         </div>
@@ -896,45 +891,72 @@
         const nextBtn = document.getElementById('nextBtn');
         const listenButtons = document.querySelectorAll('.btn-listen');
         const audio = new Audio();
+        audio.preload = 'metadata';
         let currentTrackIndex = 0;
-        let isPlaying = false;
+
+        function hasSource() {
+            return !!audio.getAttribute('src');
+        }
+
+        function showPlayer() {
+            audioPlayer.classList.add('show');
+            document.body.classList.add('player-open');
+        }
+
+        function hidePlayer() {
+            audioPlayer.classList.remove('show');
+            document.body.classList.remove('player-open');
+        }
 
         function loadTrack(index) {
             currentTrackIndex = index;
             const track = tracks[index];
-           
-            audio.src = track.audioUrl;
+
+            audio.src = track.audioUrl; // сама запускает загрузку, отдельный audio.load() не нужен
             currentTrackElement.textContent = track.name;
-           
+
             progress.style.width = '0%';
+            progressBar.setAttribute('aria-valuenow', '0');
             currentTimeElement.textContent = '0:00';
             durationElement.textContent = '0:00';
-           
-            audioPlayer.classList.add('show');
-           
-            audio.load();
+
+            showPlayer();
+
             audio.play().then(() => {
-                isPlaying = true;
-                playIcon.className = 'fas fa-pause';
                 showNotification(`Играет: ${track.name}`);
-            }).catch(() => {
-                isPlaying = false;
-                playIcon.className = 'fas fa-play';
-                showNotification(`Загружен: ${track.name}. Нажмите ▶`);
+            }).catch(err => {
+                // AbortError: трек успели переключить, это не ошибка
+                if (err.name === 'AbortError') return;
+                // NotAllowedError: браузер запретил автозапуск
+                if (err.name === 'NotAllowedError') {
+                    showNotification(`Загружен: ${track.name}. Нажмите ▶`);
+                }
+                // остальные ошибки обрабатывает событие 'error'
             });
         }
 
+        // Иконка и состояние берутся из самого аудио, так они не рассинхронизируются
+        audio.addEventListener('play', () => { playIcon.className = 'fas fa-pause'; });
+        audio.addEventListener('pause', () => { playIcon.className = 'fas fa-play'; });
+
+        audio.addEventListener('error', () => {
+            if (!hasSource()) return;
+            playIcon.className = 'fas fa-play';
+            showNotification(`Не удалось загрузить: ${tracks[currentTrackIndex].name}`, true);
+        });
+
         audio.addEventListener('timeupdate', function() {
-            if (!isNaN(audio.duration) && audio.duration > 0) {
+            if (Number.isFinite(audio.duration) && audio.duration > 0) {
                 const percent = (audio.currentTime / audio.duration) * 100;
                 progress.style.width = `${percent}%`;
+                progressBar.setAttribute('aria-valuenow', String(Math.round(percent)));
                 currentTimeElement.textContent = formatTime(audio.currentTime);
                 durationElement.textContent = formatTime(audio.duration);
             }
         });
 
         audio.addEventListener('loadedmetadata', function() {
-            if (!isNaN(audio.duration)) {
+            if (Number.isFinite(audio.duration)) {
                 durationElement.textContent = formatTime(audio.duration);
             }
         });
@@ -944,103 +966,129 @@
         });
 
         function formatTime(seconds) {
-            if (isNaN(seconds)) return '0:00';
+            if (!Number.isFinite(seconds)) return '0:00';
             const mins = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
+        function seekTo(seconds) {
+            if (!Number.isFinite(audio.duration)) return;
+            audio.currentTime = Math.min(Math.max(seconds, 0), audio.duration);
+        }
+
         progressBar.addEventListener('click', function(e) {
+            if (!Number.isFinite(audio.duration)) return;
             const rect = this.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            audio.currentTime = percent * audio.duration;
+            seekTo(((e.clientX - rect.left) / rect.width) * audio.duration);
+        });
+
+        progressBar.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') { seekTo(audio.currentTime + 5); e.preventDefault(); }
+            if (e.key === 'ArrowLeft') { seekTo(audio.currentTime - 5); e.preventDefault(); }
         });
 
         playPauseBtn.addEventListener('click', function() {
-            if (isPlaying) {
-                audio.pause();
-                playIcon.className = 'fas fa-play';
+            if (!hasSource()) return;
+            if (audio.paused) {
+                audio.play().catch(() => {});
             } else {
-                audio.play().then(() => {
-                    playIcon.className = 'fas fa-pause';
-                });
+                audio.pause();
             }
-            isPlaying = !isPlaying;
-        });
-
-        prevBtn.addEventListener('click', function() {
-            currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-            loadTrack(currentTrackIndex);
-        });
-
-        nextBtn.addEventListener('click', function() {
-            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
-            loadTrack(currentTrackIndex);
         });
 
         function playNextTrack() {
-            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
-            loadTrack(currentTrackIndex);
+            loadTrack((currentTrackIndex + 1) % tracks.length);
         }
+
+        prevBtn.addEventListener('click', function() {
+            loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length);
+        });
+
+        nextBtn.addEventListener('click', playNextTrack);
 
         listenButtons.forEach((button, index) => {
             button.addEventListener('click', function() {
-                loadTrack(index);
+                const trackIndex = Number(button.dataset.track) - 1;
+                const i = Number.isInteger(trackIndex) && tracks[trackIndex] ? trackIndex : index;
+                // тот же трек уже загружен: просто показываем плеер и продолжаем
+                if (i === currentTrackIndex && hasSource()) {
+                    showPlayer();
+                    if (audio.paused) audio.play().catch(() => {});
+                    return;
+                }
+                loadTrack(i);
             });
         });
 
         closePlayerBtn.addEventListener('click', function() {
             audio.pause();
-            isPlaying = false;
-            playIcon.className = 'fas fa-play';
-            audioPlayer.classList.remove('show');
+            hidePlayer();
         });
 
-        function showNotification(message) {
+        let notificationEl = null;
+        let notificationTimer = null;
+
+        function showNotification(message, isError = false) {
+            // одно уведомление за раз, без стопки
+            clearTimeout(notificationTimer);
+            if (notificationEl) notificationEl.remove();
+
             const notification = document.createElement('div');
-            notification.className = 'notification';
-           
-            notification.innerHTML = `
-                <i class="fas fa-music"></i>
-                <div style="flex: 1;">
-                    <div style="font-size: 1rem; font-weight: 600;">${message}</div>
-                </div>
-            `;
-           
+            notification.className = 'notification' + (isError ? ' error' : '');
+            notification.setAttribute('role', 'status');
+
+            const icon = document.createElement('i');
+            icon.className = isError ? 'fas fa-triangle-exclamation' : 'fas fa-music';
+
+            const text = document.createElement('div');
+            text.style.cssText = 'flex: 1; font-size: 1rem; font-weight: 600;';
+            text.textContent = message; // textContent вместо innerHTML
+
+            notification.append(icon, text);
             document.body.appendChild(notification);
-           
-            setTimeout(() => notification.classList.add('show'), 10);
-           
-            setTimeout(() => {
+            notificationEl = notification;
+
+            requestAnimationFrame(() => requestAnimationFrame(() => notification.classList.add('show')));
+
+            notificationTimer = setTimeout(() => {
                 notification.classList.remove('show');
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        document.body.removeChild(notification);
-                    }
-                }, 500);
+                setTimeout(() => notification.remove(), 500);
             }, 3000);
         }
 
-        document.querySelectorAll('.btn-download').forEach(link => {
-            link.addEventListener('click', function() {
-                const trackName = this.closest('.track').querySelector('.track-name').textContent;
-                showNotification(`Скачивание: ${trackName}`);
-            });
-        });
-
-        document.querySelector('.btn-pdf').addEventListener('click', function() {
-            showNotification('Скачивание сборника задач по математике');
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.track').forEach(track => {
-                track.style.animationPlayState = 'running';
-            });
-           
-            if ('ontouchstart' in window) {
-                document.body.style.overflowX = 'hidden';
-                document.body.style.touchAction = 'pan-y';
+        // Скачивание: атрибут download игнорируется для чужих доменов,
+        // поэтому берём файл через fetch и отдаём как blob.
+        async function downloadFile(url, filename) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = objectUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(objectUrl), 10000);
+                return true;
+            } catch (err) {
+                // запасной вариант: открыть файл в новой вкладке
+                window.open(url, '_blank', 'noopener');
+                return false;
             }
+        }
+
+        document.querySelectorAll('.btn-download, .btn-pdf').forEach(link => {
+            link.addEventListener('click', async function(e) {
+                e.preventDefault();
+                const filename = link.getAttribute('download') || 'file';
+                const title = filename.replace(/\.[^.]+$/, '');
+                showNotification(`Скачивание: ${title}`);
+                const ok = await downloadFile(link.href, filename);
+                if (!ok) showNotification(`Не удалось скачать, открываю файл: ${title}`, true);
+            });
         });
     </script>
 </body>
