@@ -32,7 +32,8 @@
         }
         /* ФОНОВОЕ ИЗОБРАЖЕНИЕ */
         :root {
-            --bg-stretch: 1.2; 
+            --bg-zoom: 1.12;    
+            --bg-stretch: 1.23; 
         }
         .bg {
             position: fixed;
@@ -40,27 +41,42 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            height: 100lvh; 
+            height: 100lvh;
             display: flex;
             justify-content: center;
+            align-items: center; 
             overflow: hidden;
             z-index: -2;
             opacity: 0.9;
             pointer-events: none;
         }
         .bg img {
+            position: relative; /* поверх боковой заливки */
             flex: none;
-            height: 100%;
-            width: calc(100vh * 1248 / 848 * var(--bg-stretch));
-            width: calc(100lvh * 1248 / 848 * var(--bg-stretch)); 
+            height: calc(100% * var(--bg-zoom));
+            width: calc(100vh * 1248 / 848 * var(--bg-stretch) * var(--bg-zoom));
+            width: calc(100lvh * 1248 / 848 * var(--bg-stretch) * var(--bg-zoom)); /* 1248x848 - размер картинки */
             object-fit: fill;
             display: block;
         }
-        .bg img:first-child,
-        .bg img:last-child {
-            transform: scaleX(-1);
+        .bg-fill {
+            position: absolute;
+            top: -30px;
+            bottom: -30px;
+            width: 50%;
+            background-image: url('https://s6.iimage.su/s/16/u5jcrrCxy6H1SRkYYVm3dc6EkLjm4yO947FYCiwjt.jpg');
+            background-repeat: no-repeat;
+            background-size: 1500% 100%;
+            filter: blur(18px);
         }
-        /* Улучшенное затемнение фона */
+        .bg-fill-left {
+            left: -30px;
+            background-position: left center;
+        }
+        .bg-fill-right {
+            right: -30px;
+            background-position: right center;
+        }
         body::after {
             content: '';
             position: fixed;
@@ -244,7 +260,7 @@
         .track:hover .track-name::after {
             transform: translateX(-50%) scaleX(1);
         }
-        /* КНОПКИ */
+        /* КНОПКИ — ИСПРАВЛЕННЫЙ ОТСТУП ОТ ИКОНОК */
         .track-buttons {
             display: flex;
             flex-direction: column;
@@ -255,7 +271,7 @@
             flex-shrink: 0;
         }
         .btn {
-            padding: clamp(14px, 2vw, 16px) clamp(22px, 3vw, 28px);
+            padding: clamp(14px, 2vw, 16px) clamp(22px, 3vw, 28px); 
             border-radius: 12px;
             border: none;
             cursor: pointer;
@@ -277,7 +293,7 @@
             min-height: 52px;
         }
         .btn i {
-            margin-right: 16px;  
+            margin-right: 16px; 
             font-size: clamp(1.1rem, 2vw, 1.3rem);
             transition: all 0.4s ease;
             position: relative;
@@ -410,11 +426,9 @@
                 opacity 0.3s ease,
                 visibility 0s;
         }
-        /* чтобы плеер не перекрывал нижнюю карточку */
         body.player-open .pdf-container {
             margin-bottom: 220px;
         }
-        /* видимый фокус для клавиатуры */
         .btn:focus-visible,
         .player-btn:focus-visible,
         .close-player:focus-visible,
@@ -772,8 +786,8 @@
 </head>
 <body>
     <div class="bg" aria-hidden="true">
-        <img src="https://s6.iimage.su/s/16/u5jcrrCxy6H1SRkYYVm3dc6EkLjm4yO947FYCiwjt.jpg" alt="" decoding="async">
-        <img src="https://s6.iimage.su/s/16/u5jcrrCxy6H1SRkYYVm3dc6EkLjm4yO947FYCiwjt.jpg" alt="" decoding="async">
+        <div class="bg-fill bg-fill-left"></div>
+        <div class="bg-fill bg-fill-right"></div>
         <img src="https://s6.iimage.su/s/16/u5jcrrCxy6H1SRkYYVm3dc6EkLjm4yO947FYCiwjt.jpg" alt="" decoding="async">
     </div>
     <h1 class="site-title">Путешествуем с математикой</h1>
@@ -932,7 +946,7 @@
             currentTrackIndex = index;
             const track = tracks[index];
 
-            audio.src = track.audioUrl; // сама запускает загрузку, отдельный audio.load() не нужен
+            audio.src = track.audioUrl; 
             currentTrackElement.textContent = track.name;
 
             progress.style.width = '0%';
@@ -945,26 +959,19 @@
             audio.play().then(() => {
                 showNotification(`Играет: ${track.name}`);
             }).catch(err => {
-                // AbortError: трек успели переключить, это не ошибка
                 if (err.name === 'AbortError') return;
-                // NotAllowedError: браузер запретил автозапуск
                 if (err.name === 'NotAllowedError') {
                     showNotification(`Загружен: ${track.name}. Нажмите ▶`);
                 }
-                // остальные ошибки обрабатывает событие 'error'
             });
         }
-
-        // Иконка и состояние берутся из самого аудио, так они не рассинхронизируются
         audio.addEventListener('play', () => { playIcon.className = 'fas fa-pause'; });
         audio.addEventListener('pause', () => { playIcon.className = 'fas fa-play'; });
-
         audio.addEventListener('error', () => {
             if (!hasSource()) return;
             playIcon.className = 'fas fa-play';
             showNotification(`Не удалось загрузить: ${tracks[currentTrackIndex].name}`, true);
         });
-
         audio.addEventListener('timeupdate', function() {
             if (Number.isFinite(audio.duration) && audio.duration > 0) {
                 const percent = (audio.currentTime / audio.duration) * 100;
@@ -974,13 +981,11 @@
                 durationElement.textContent = formatTime(audio.duration);
             }
         });
-
         audio.addEventListener('loadedmetadata', function() {
             if (Number.isFinite(audio.duration)) {
                 durationElement.textContent = formatTime(audio.duration);
             }
         });
-
         audio.addEventListener('ended', function() {
             playNextTrack();
         });
@@ -1077,8 +1082,6 @@
             }, 3000);
         }
 
-        // Скачивание: атрибут download игнорируется для чужих доменов,
-        // поэтому берём файл через fetch и отдаём как blob.
         async function downloadFile(url, filename) {
             try {
                 const response = await fetch(url);
